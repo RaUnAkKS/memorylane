@@ -1,0 +1,2 @@
+# memorylane
+Django Project
