@@ -1,0 +1,200 @@
+{% extends 'main.html' %}
+
+{% block title %}{{ capsule.title }} | MemoryLane{% endblock %}
+
+{% block content %}
+
+<!-- ACTION BAR -->
+<div class="capsule-actions">
+
+  {% if request.user == capsule.created_by %}
+    <a href="{% url 'manage_collaborators' capsule.id %}" class="btn secondary">
+      👥 Manage Collaborators
+    </a>
+  {% endif %}
+
+  {% if request.user in capsule.collaborators.all or request.user == capsule.created_by %}
+    {% if capsule.is_unlocked %}
+      <a href="{% url 'add_entry' capsule.id %}" class="btn primary">
+        ➕ Add Memory
+      </a>
+    {% endif %}
+  {% endif %}
+
+</div>
+
+<!-- CAPSULE HEADER -->
+<section class="capsule-header card">
+  <h1>{{ capsule.title }}</h1>
+
+  <div class="meta">
+    <span>👤 {{ capsule.created_by.username }}</span>
+    <span class="badge {{ capsule.privacy }}">
+      {{ capsule.privacy|title }}
+    </span>
+  </div>
+</section>
+
+<!-- CAPSULE CONTENT -->
+{% if capsule.is_unlocked %}
+
+  <section class="card">
+    <h3>💌 Message</h3>
+    <p class="story-text">{{ capsule.message }}</p>
+
+    {% if capsule.image %}
+      <img src="{{ capsule.image.url }}" class="media">
+    {% endif %}
+
+    {% if capsule.video %}
+      <video class="media" controls>
+        <source src="{{ capsule.video.url }}">
+      </video>
+    {% endif %}
+
+    {% if capsule.audio %}
+      <audio controls class="media">
+        <source src="{{ capsule.audio.url }}">
+      </audio>
+    {% endif %}
+  </section>
+
+  <!-- CONTRIBUTIONS -->
+  <section class="card">
+    <h3>📜 Family Contributions</h3>
+
+    {% for entry in capsule.entries.all %}
+      <div class="entry">
+        <strong>{{ entry.created_by.username }}</strong>
+        <small>{{ entry.created_at }}</small>
+
+        <p>{{ entry.text }}</p>
+
+        {% if entry.image %}
+          <img src="{{ entry.image.url }}" class="media small">
+        {% endif %}
+
+        {% if entry.video %}
+          <video class="media small" controls>
+            <source src="{{ entry.video.url }}">
+          </video>
+        {% endif %}
+
+        {% if entry.audio %}
+          <audio controls>
+            <source src="{{ entry.audio.url }}">
+          </audio>
+        {% endif %}
+      </div>
+      <hr>
+    {% empty %}
+      <p class="muted">No contributions yet.</p>
+    {% endfor %}
+  </section>
+
+{% else %}
+
+  <!-- LOCKED STATE -->
+  <section class="card locked-card">
+    <h3>🔒 This capsule is locked</h3>
+
+    <p>
+      Unlocks on:
+      <span id="unlock-date" data-unlock="{{ capsule.unlock_date|date:'c' }}">
+        {{ capsule.unlock_date }}
+      </span>
+    </p>
+
+    <p id="countdown" class="countdown">
+      Loading countdown...
+    </p>
+
+    {% if capsule.unlock_type == 'event' %}
+      <hr>
+      <p>Unlock event: <strong>{{ capsule.unlock_event|title }}</strong></p>
+
+      {% if request.user == capsule.created_by %}
+        <form method="post" action="{% url 'trigger_event' capsule.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn primary">
+            ✅ Mark Event as Completed
+          </button>
+        </form>
+      {% endif %}
+    {% endif %}
+  </section>
+
+{% endif %}
+
+<!-- COMMENTS -->
+<section class="card">
+{% if capsule.is_unlocked %}
+
+  <h3>💬 Reflections</h3>
+
+  <form method="post" class="comment-form">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <button type="submit" class="btn primary">
+      Post Comment
+    </button>
+  </form>
+
+  {% if comments %}
+    <ul class="comment-list">
+      {% for comment in comments %}
+        <li>
+          <strong>{{ comment.user.username }}</strong>
+          {% if comment.reaction %}
+            <span class="reaction">{{ comment.reaction }}</span>
+          {% endif %}
+          <p>{{ comment.text }}</p>
+          <small>{{ comment.created_at }}</small>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted">No comments yet.</p>
+  {% endif %}
+
+{% else %}
+  <p class="muted">🔒 Comments unlock with the capsule.</p>
+{% endif %}
+</section>
+
+<a href="{% url 'capsule_list' %}" class="back-link">
+  ← Back to My Capsules
+</a>
+
+<!-- Countdown JS (UNCHANGED) -->
+<script>
+  const unlockElement = document.getElementById("unlock-date");
+  const countdownEl = document.getElementById("countdown");
+
+  if (unlockElement && countdownEl) {
+    const unlockTime = new Date(unlockElement.dataset.unlock).getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = unlockTime - now;
+
+      if (distance <= 0) {
+        countdownEl.innerHTML = "🎉 Capsule unlocked! Refresh the page.";
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      countdownEl.innerHTML =
+        `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  }
+</script>
+
+{% endblock %}

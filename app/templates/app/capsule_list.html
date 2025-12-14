@@ -1,0 +1,73 @@
+{% extends 'main.html' %}
+
+{% block title %}My Capsules | MemoryLane{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+  <h1>📦 My Capsules</h1>
+  <p class="muted">
+    Browse, filter, and revisit your locked and unlocked memories.
+  </p>
+</section>
+
+<!-- FILTER BAR -->
+<form method="get" class="filter-bar card">
+  <div class="filter-group">
+    <label>Privacy</label>
+    <select name="privacy">
+      <option value="">All</option>
+      <option value="private" {% if selected_privacy == 'private' %}selected{% endif %}>Private</option>
+      <option value="family" {% if selected_privacy == 'family' %}selected{% endif %}>Family</option>
+      <option value="public" {% if selected_privacy == 'public' %}selected{% endif %}>Public</option>
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label>Status</label>
+    <select name="status">
+      <option value="">All</option>
+      <option value="locked" {% if selected_status == 'locked' %}selected{% endif %}>Locked</option>
+      <option value="unlocked" {% if selected_status == 'unlocked' %}selected{% endif %}>Unlocked</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn primary">
+    Apply Filters
+  </button>
+</form>
+
+<!-- CAPSULE LIST -->
+{% if capsules %}
+  <section class="grid capsule-grid">
+    {% for capsule in capsules %}
+      <a href="{% url 'capsule_detail' capsule.id %}" class="card capsule-card">
+
+        <h3>{{ capsule.title }}</h3>
+
+        <span class="badge {{ capsule.privacy }}">
+          {{ capsule.privacy|title }}
+        </span>
+
+        {% if capsule.is_unlocked %}
+          <span class="badge unlocked">Unlocked</span>
+        {% else %}
+          <span class="badge locked">
+            🔒 Unlocks on {{ capsule.unlock_date|date:"M d, Y" }}
+          </span>
+        {% endif %}
+
+      </a>
+    {% endfor %}
+  </section>
+{% else %}
+  <div class="empty-state">
+    <p>No capsules found with the selected filters.</p>
+  </div>
+{% endif %}
+
+<a href="{% url 'dashboard' %}" class="back-link">
+  ← Back to Dashboard
+</a>
+
+{% endblock %}

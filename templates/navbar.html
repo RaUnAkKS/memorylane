@@ -1,0 +1,28 @@
+<nav class="navbar">
+  <div class="nav-left">
+    <a href="{% url 'home' %}" class="logo">
+    📦 <span>MemoryLane</span>
+    </a>
+  </div>
+
+  <div class="nav-right">
+    {% if request.user.is_authenticated %}
+      <a href="{% url 'dashboard' %}">Dashboard</a>
+      <a href="{% url 'capsule_list' %}">Capsules</a>
+
+      <a href="{% url 'notifications' %}" class="notif-link">
+        🔔
+        <span id="notif-count" class="notif-badge">
+          {{ unread_notification_count }}
+        </span>
+      </a>
+
+      <span class="user-chip">{{ request.user.username }}</span>
+      <a href="{% url 'logout' %}" class="logout">Logout</a>
+    {% else %}
+      <a href="{% url 'home' %}">Home</a>
+      <a href="{% url 'signup' %}">Signup</a>
+      <a href="{% url 'login' %}">Login</a>
+    {% endif %}
+  </div>
+</nav>

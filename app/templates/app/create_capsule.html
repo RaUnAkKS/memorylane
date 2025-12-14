@@ -1,0 +1,134 @@
+{% extends 'main.html' %}
+
+{% block title %}Create Capsule | MemoryLane{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+  <h1>✨ Create a Time Capsule</h1>
+  <p class="muted">
+    Capture memories that will unlock at the perfect moment.
+  </p>
+</section>
+
+<div class="card">
+
+  <form method="post" enctype="multipart/form-data" class="capsule-form">
+    {% csrf_token %}
+
+    <!-- TITLE / MESSAGE / MEDIA -->
+    {{ form.title.label_tag }}
+    {{ form.title }}
+
+    {{ form.message.label_tag }}
+    {{ form.message }}
+
+    <!-- THEME -->
+    <div class="form-group">
+      {{ form.theme.label_tag }}
+      {{ form.theme }}
+
+      <small class="muted">
+        Don’t see the right theme?
+      </small>
+
+      <div class="custom-theme-toggle">
+        <input type="checkbox" id="customThemeCheck">
+        <label for="customThemeCheck">Add a custom theme</label>
+      </div>
+
+      <input
+        type="text"
+        name="custom_theme"
+        id="customThemeInput"
+        placeholder="Enter your custom theme"
+        class="hidden-input"
+      >
+    </div>
+
+    <!-- UNLOCK SETTINGS -->
+    {{ form.unlock_type.label_tag }}
+    {{ form.unlock_type }}
+
+    {{ form.unlock_date.label_tag }}
+    {{ form.unlock_date }}
+
+    {{ form.unlock_event.label_tag }}
+    {{ form.unlock_event }}
+
+    <!-- PRIVACY -->
+    {{ form.privacy.label_tag }}
+    {{ form.privacy }}
+
+        <!-- RECIPIENTS -->
+    <div class="form-group">
+  <label>Recipients</label>
+
+  <input
+    type="text"
+    placeholder="Search recipients..."
+    class="search-input"
+    onkeyup="filterUserCards(this, 'recipients-list')"
+  >
+
+  <div class="user-select-list" id="recipients-list">
+    {% for user in form.recipients.field.queryset %}
+      <div
+        class="user-card"
+        data-value="{{ user.id }}"
+        onclick="toggleUser(this, 'id_recipients')"
+      >
+        {{ user.username }}
+      </div>
+    {% endfor %}
+  </div>
+
+    {{ form.recipients }}
+    </div>
+
+    <div class="form-group">
+  <label>Collaborators</label>
+
+  <input
+    type="text"
+    placeholder="Search collaborators..."
+    class="search-input"
+    onkeyup="filterUserCards(this, 'collaborators-list')"
+  >
+
+  <div class="user-select-list" id="collaborators-list">
+    {% for user in form.collaborators.field.queryset %}
+      <div
+        class="user-card"
+        data-value="{{ user.id }}"
+        onclick="toggleUser(this, 'id_collaborators')"
+      >
+        {{ user.username }}
+      </div>
+    {% endfor %}
+  </div>
+
+    {{ form.collaborators }}
+    </div>
+
+
+
+
+    <!-- MEDIA -->
+    {{ form.image.label_tag }}
+    {{ form.image }}
+
+    {{ form.video.label_tag }}
+    {{ form.video }}
+
+    {{ form.audio.label_tag }}
+    {{ form.audio }}
+
+    <button type="submit" class="btn primary full-width">
+      📦 Create Capsule
+    </button>
+
+  </form>
+</div>
+
+{% endblock %}

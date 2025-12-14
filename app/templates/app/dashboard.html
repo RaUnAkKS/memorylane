@@ -1,0 +1,42 @@
+{% extends 'main.html' %}
+
+{% block title %}Dashboard | MemoryLane{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-hero">
+  <h1>Hello, {{ request.user.username }} <span class="wave">👋</span></h1>
+  <p class="muted">
+    This is your personal space to create, manage, and relive memories.
+  </p>
+</section>
+
+<section class="dashboard-grid">
+
+  <a href="{% url 'create_capsule' %}" class="dashboard-card">
+    <div class="card-icon">➕</div>
+    <h3>Create Time Capsule</h3>
+    <p>
+      Store photos, videos, and messages that unlock in the future.
+    </p>
+  </a>
+
+  <a href="{% url 'capsule_list' %}" class="dashboard-card">
+    <div class="card-icon">📦</div>
+    <h3>My Capsules</h3>
+    <p>
+      View, filter, and manage all your created and shared capsules.
+    </p>
+  </a>
+
+  <a href="{% url 'notifications' %}" class="dashboard-card">
+    <div class="card-icon">🔔</div>
+    <h3>Notifications</h3>
+    <p>
+      See newly unlocked memories and updates from family members.
+    </p>
+  </a>
+
+</section>
+
+{% endblock %}

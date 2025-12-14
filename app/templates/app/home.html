@@ -1,0 +1,63 @@
+{% extends 'main.html' %}
+
+{% block title %}Home | MemoryLane{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+  <h1 class="hero-title">Preserve Memories for the Future 📦</h1>
+
+  <p class="hero-subtitle">
+    MemoryLane lets you create digital time capsules filled with photos,
+    videos, letters, and emotions — unlocked at the perfect moment for
+    your loved ones.
+  </p>
+
+  {% if user.is_authenticated %}
+    <div class="hero-actions">
+      <p class="welcome-text">
+        Welcome back, <strong>{{ user.username }}</strong> 👋
+      </p>
+
+      <a href="{% url 'dashboard' %}" class="btn primary">
+        Go to Dashboard →
+      </a>
+    </div>
+  {% else %}
+    <div class="hero-actions">
+      <a href="{% url 'signup' %}" class="btn primary">
+        Get Started
+      </a>
+      <a href="{% url 'login' %}" class="btn secondary">
+        Login
+      </a>
+    </div>
+  {% endif %}
+</section>
+
+<hr class="divider">
+
+<section class="features grid">
+  <div class="card">
+    <h3>⏳ Time Capsules</h3>
+    <p>
+      Lock memories and unlock them on a future date or a meaningful life event.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>👨‍👩‍👧 Family Sharing</h3>
+    <p>
+      Share capsules privately with family members and collaborators.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>🔔 Smart Notifications</h3>
+    <p>
+      Get notified instantly when a capsule unlocks — no emails needed.
+    </p>
+  </div>
+</section>
+
+{% endblock %}

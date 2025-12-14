@@ -1,0 +1,50 @@
+{% extends 'main.html' %}
+
+{% block title %}Manage Collaborators | MemoryLane{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+  <h1>👥 Manage Collaborators</h1>
+  <p class="muted">
+    Control who can contribute memories to the capsule
+    <strong>"{{ capsule.title }}"</strong>.
+  </p>
+</section>
+
+<!-- FORM CARD -->
+<div class="card">
+  <h3>Add / Update Collaborators</h3>
+
+  <form method="post" class="capsule-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit" class="btn primary">
+      💾 Save Collaborators
+    </button>
+  </form>
+</div>
+
+<!-- CURRENT COLLABORATORS -->
+<div class="card" style="margin-top: 20px;">
+  <h3>Current Collaborators</h3>
+
+  {% if capsule.collaborators.all %}
+    <ul class="collaborator-list">
+      {% for user in capsule.collaborators.all %}
+        <li>
+          👤 {{ user.username }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted">No collaborators added yet.</p>
+  {% endif %}
+</div>
+
+<a href="{% url 'capsule_detail' capsule.id %}" class="back-link">
+  ← Back to Capsule
+</a>
+
+{% endblock %}

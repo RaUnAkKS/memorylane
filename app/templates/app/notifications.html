@@ -1,0 +1,44 @@
+{% extends 'main.html' %}
+
+{% block title %}Notifications | MemoryLane{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+  <h1>🔔 Notifications</h1>
+  <p class="muted">
+    Stay updated when memories unlock or family members contribute.
+  </p>
+</section>
+
+{% if notifications %}
+  <div class="notification-list">
+
+    {% for notification in notifications %}
+      <a
+        href="{% if notification.capsule %}{% url 'capsule_detail' notification.capsule.id %}{% else %}#{% endif %}"
+        class="notification-item {% if not notification.is_read %}unread{% endif %}"
+      >
+
+        <div class="notification-content">
+          <p class="notification-message">
+            {{ notification.message }}
+          </p>
+
+          <small class="notification-time">
+            {{ notification.created_at }}
+          </small>
+        </div>
+
+        <span class="notification-arrow">→</span>
+      </a>
+    {% endfor %}
+
+  </div>
+{% else %}
+  <div class="empty-state">
+    <p>No notifications yet.</p>
+  </div>
+{% endif %}
+
+{% endblock %}

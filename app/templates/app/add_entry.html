@@ -1,0 +1,33 @@
+{% extends 'main.html' %}
+
+{% block title %}Add Memory | MemoryLane{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+  <h1>➕ Add a Memory</h1>
+  <p class="muted">
+    Contribute your memory to the capsule
+    <strong>"{{ capsule.title }}"</strong>.
+  </p>
+</section>
+
+<div class="card">
+
+  <form method="post" enctype="multipart/form-data" class="capsule-form">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit" class="btn primary full-width">
+      💾 Save Memory
+    </button>
+  </form>
+
+</div>
+
+<a href="{% url 'capsule_detail' capsule.id %}" class="back-link">
+  ← Back to Capsule
+</a>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'main.html' %}
+
+{% block title %}Sign Up | MemoryLane{% endblock %}
+
+{% block content %}
+
+<div class="auth-container">
+  <div class="auth-card">
+
+    <h2 class="auth-title">Create Your Account ✨</h2>
+    <p class="auth-subtitle">
+      Join MemoryLane and start preserving moments for the future.
+    </p>
+
+    <form method="post" class="auth-form">
+      {% csrf_token %}
+
+      {{ form.as_p }}
+
+      <button type="submit" class="btn primary full-width">
+        Sign Up
+      </button>
+    </form>
+
+    <p class="auth-footer">
+      Already have an account?
+      <a href="{% url 'login' %}">Login</a>
+    </p>
+
+  </div>
+</div>
+
+{% endblock %}
